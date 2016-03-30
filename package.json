@@ -1,0 +1,19 @@
+{
+  "name": "magnet-blacklist",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "provision": "node ./provision/index.js"
+  },
+  "description": "URL black list client for magnet",
+  "main": "index.js",
+  "author": "Francisco Jordano <francisco@jordano.es>",
+  "license": "MPL-2.0",
+  "engines": {
+    "node": ">=4.2.0"
+  },
+  "dependencies": {
+    "ioredis": "^1.15.1",
+    "yajsonfig": "^1.0.0"
+  }
+}
