@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "provision": "node ./provision/index.js"
+    "provision": "node ./provision/index.js",
+    "start": "node index.js"
   },
   "description": "URL black list client for magnet",
   "main": "index.js",
@@ -14,6 +15,7 @@
   },
   "dependencies": {
     "download": "^4.4.3",
+    "fs-exists-in-path": "^1.0.0",
     "ioredis": "^1.15.1",
     "stream-array": "^1.1.1",
     "tmp": "0.0.28",
