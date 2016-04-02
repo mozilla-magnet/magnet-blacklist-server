@@ -25,7 +25,7 @@ function getProviders() {
 getProviders()
   .then((providers) => {
     return providers.map((provider) => {
-      provider.init(redis);
+      return provider.init(redis);
     });
   })
   .then((providers) => {

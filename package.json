@@ -1,5 +1,5 @@
 {
-  "name": "magnet-blacklist",
+  "name": "magnet-blacklist-server",
   "version": "1.0.0",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -13,7 +13,10 @@
     "node": ">=4.2.0"
   },
   "dependencies": {
+    "download": "^4.4.3",
     "ioredis": "^1.15.1",
+    "stream-array": "^1.1.1",
+    "tmp": "0.0.28",
     "yajsonfig": "^1.0.0"
   }
 }
