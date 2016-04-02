@@ -1,3 +1,6 @@
+const fs = require('fs');
+const readline = require('readline');
+
 function BaseProvider() {
   this.name = 'BaseProvider';
 }
@@ -18,7 +21,6 @@ BaseProvider.prototype.execute = function() {
       const stream = new ReadableArrayStream(entries, 5000);
       const executePromise = new Promise((resolve, reject) => {
         var chunk = stream.read();
-        var count = 0;
 
         const self = this;
         function loop() {
@@ -27,9 +29,7 @@ BaseProvider.prototype.execute = function() {
           }
 
           return new Promise((resolve, reject) => {
-            console.log('About to parse chunk ', count);
             return self.saveToRedis(chunk).then(() => {
-              count++;
               chunk = stream.read();
               return loop();
             });
@@ -43,6 +43,37 @@ BaseProvider.prototype.execute = function() {
     });
 }
 
+BaseProvider.prototype.saveToRedis = function(entries) {
+  const pipeline = this.redis.pipeline();
+  entries.forEach((entry) => {
+    pipeline.set(entry, 0);
+  });
+
+  return pipeline.exec();
+};
+
+BaseProvider.prototype.readFile = function(path) {
+  return new Promise((resolve) => {
+    var lines = [];
+    readline.createInterface({
+      input: fs.createReadStream(path),
+      terminal: false
+    }).on('line', (line) => {
+      lines.push(line);
+    }).on('close', () => {
+      resolve(lines);
+    });
+  });
+}
+BaseProvider.prototype.fileExists = function(path) {
+  return new Promise((resolve) => {
+    fs.stat(path, (err) => {
+      resolve(err == null);
+    });
+  });
+}
+
+// Stream for processing big arrays
 var Readable = require("stream").Readable;
 var inherits = require("util").inherits;
 
@@ -62,14 +93,5 @@ ReadableArrayStream.prototype._read = function(size) {
   this.push(this.list.slice(0, this.chunk));
   this.list = this.list.slice(this.chunk);  
 }
-
-BaseProvider.prototype.saveToRedis = function(entries) {
-  const pipeline = this.redis.pipeline();
-  entries.forEach((entry) => {
-    pipeline.set(entry, 0);
-  });
-
-  return pipeline.exec();
-};
 
 module.exports = BaseProvider;

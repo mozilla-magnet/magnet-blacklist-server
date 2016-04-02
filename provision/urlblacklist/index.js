@@ -17,7 +17,7 @@ util.inherits(UrlBlackList, BaseProvider);
 UrlBlackList.prototype.checkCached = function() {
   const cachedDir = '/tmp/blacklists';
 
-  return fileExists(cachedDir)
+  return this.fileExists(cachedDir)
     .then((result) => {
       return result ? cachedDir : null;
     });
@@ -75,8 +75,8 @@ UrlBlackList.prototype.readCandidate = function(candidate) {
   paths.push(path.join(candidate, 'domains'));
   paths.push(path.join(candidate, 'urls'));
 
-  const domainsExist = fileExists(paths[0]);
-  const urlsExist = fileExists(paths[1]);
+  const domainsExist = this.fileExists(paths[0]);
+  const urlsExist = this.fileExists(paths[1]);
 
   return Promise.all([domainsExist, urlsExist])
     .then((candidates) => {
@@ -86,7 +86,7 @@ UrlBlackList.prototype.readCandidate = function(candidate) {
           return;
         }
 
-        filesContent.push(readFile(paths[index]));
+        filesContent.push(this.readFile(paths[index]));
       });
 
       return Promise.all(filesContent);
@@ -115,28 +115,6 @@ UrlBlackList.prototype.getForbiddenTypes = function() {
     'spyware',
     'virusinfected'
   ];
-}
-
-function readFile(path) {
-  return new Promise((resolve) => {
-    var lines = [];
-    readline.createInterface({
-      input: fs.createReadStream(path),
-      terminal: false
-    }).on('line', (line) => {
-      lines.push(line);
-    }).on('close', () => {
-      resolve(lines);
-    });
-  });
-}
-
-function fileExists(path) {
-  return new Promise((resolve) => {
-    fs.stat(path, (err) => {
-      resolve(err == null);
-    });
-  });
 }
 
 module.exports = new UrlBlackList();
